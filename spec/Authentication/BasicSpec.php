@@ -30,7 +30,7 @@ class BasicSpec extends ObjectBehavior
                 'password' => 'secret',
         ]))->shouldBeCalled();
         $request->getBody()->willReturn($body);
-        $request->withBody(Argument::type(StreamableInterface::class))->willReturn($newRequest);
+        $request->withBody(Argument::type('Psr\Http\Message\StreamableInterface'))->willReturn($newRequest);
         $request = $this->authenticateRequest($request);
 
         $request->shouldBe($newRequest);
