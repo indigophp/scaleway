@@ -13,6 +13,7 @@ namespace Indigo\Scaleway\Authentication;
 
 use Indigo\Scaleway\Authentication;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\StreamableInterface;
 
 /**
  * Basic authentication with email-password pair
@@ -48,16 +49,12 @@ class Basic implements Authentication
     {
         $requestBody = $request->getBody();
 
-        if (!$requestBody->isSeekable() or !$requestBody->isWritable()) {
-            throw new \RuntimeException('Cannot authenticate request: Body stream is not seekable or not writable');
-        }
+        $this->ensureBodyRewritable($requestBody);
 
         $body = (string) $requestBody;
         $body = json_decode($body, true);
 
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \RuntimeException('Cannot authenticate request: no valid JSON data found');
-        }
+        $this->ensureJsonDecodedCorrectly();
 
         $body['email'] = $this->email;
         $body['password'] = $this->password;
@@ -66,5 +63,29 @@ class Basic implements Authentication
         $requestBody->write(json_encode($body));
 
         return $request->withBody($requestBody);
+    }
+
+    /**
+     * Ensures that the body is valid and can be rewriten after inserting auth details
+     *
+     * @param StreamableInterface $body
+     *
+     * @throws \RuntimeException If the body cannot be rewriten
+     */
+    private function ensureBodyRewritable($body)
+    {
+        if (is_null($body) or !$body->isSeekable() or !$body->isWritable()) {
+            throw new \RuntimeException('Cannot authenticate request: Body stream cannot be rewritten');
+        }
+    }
+
+    /**
+     * Ensures that the body JSON is decoded correctly
+     */
+    private function ensureJsonDecodedCorrectly()
+    {
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \RuntimeException('Cannot authenticate request: No valid JSON data found');
+        }
     }
 }
