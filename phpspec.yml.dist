@@ -1,0 +1,5 @@
+suites:
+  scaleway_suite:
+    namespace: Indigo\Scaleway
+    psr4_prefix: Indigo\Scaleway
+formatter.name: pretty

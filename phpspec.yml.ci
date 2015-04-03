@@ -1,0 +1,10 @@
+suites:
+  scaleway_suite:
+    namespace: Indigo\Scaleway
+    psr4_prefix: Indigo\Scaleway
+extensions:
+  - PhpSpec\Extension\CodeCoverageExtension
+formatter.name: pretty
+code_coverage:
+  format: clover
+  output: build/coverage.xml
