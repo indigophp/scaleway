@@ -2,29 +2,11 @@
 
 namespace spec\Indigo\Scaleway;
 
-use Indigo\Scaleway\Authentication;
-use Ivory\HttpAdapter\HttpAdapterInterface;
-use PhpSpec\ObjectBehavior;
-
-class ScalewaySpec extends ObjectBehavior
+class ScalewaySpec extends HttpAdapterAuthBehavior
 {
-    function let(HttpAdapterInterface $httpAdapter, Authentication $authentication)
-    {
-        $this->beConstructedWith($httpAdapter, $authentication);
-    }
-
     function it_is_initializable()
     {
         $this->shouldHaveType('Indigo\Scaleway\Scaleway');
-    }
-
-    function it_has_authentication(Authentication $authentication, Authentication $anotherAuthentication)
-    {
-        $this->getAuthentication()->shouldReturn($authentication);
-
-        $this->setAuthentication($anotherAuthentication);
-
-        $this->getAuthentication()->shouldReturn($anotherAuthentication);
     }
 
     function it_provides_token_api()
